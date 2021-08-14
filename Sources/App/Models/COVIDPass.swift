@@ -33,45 +33,45 @@ struct COVIDPass {
             
             struct Recovery: HasCertificateData {
                 
-                let diseaseAgentTargeted: String    //  tg
-                let country: String                 //  co
-                let certificateIssuer: String       //  is
-                let certificateIdentifier: String   //  ci
+                let diseaseAgentTargeted: DiseaseAgentTargeted  //  tg
+                let country: String                             //  co
+                let certificateIssuer: String                   //  is
+                let certificateIdentifier: String               //  ci
                 
-                let firstPositiveTestDate: String   //  fr
+                let firstPositiveTestDate: String               //  fr
                 
-                let validFrom: String               //  df
-                let validUntil: String              //  du
+                let validFrom: String                           //  df
+                let validUntil: String                          //  du
             }
             
             struct Test: HasCertificateData {
                 
-                let diseaseAgentTargeted: String        //  tg
-                let country: String                     //  co
-                let certificateIssuer: String           //  is
-                let certificateIdentifier: String       //  ci
+                let diseaseAgentTargeted: DiseaseAgentTargeted  //  tg
+                let country: String                             //  co
+                let certificateIssuer: String                   //  is
+                let certificateIdentifier: String               //  ci
                 
-                let testType: TestType                  //  tt
-                let testName: String?                   //  nm
-                let testDeviceIdentifier: String        //  ma
-                let testSampleCollectionDate: String    //  sc
-                let testResult: TestResult              //  tr
-                let testingCentreFacility: String       //  tc
+                let testType: TestType                          //  tt
+                let testName: String?                           //  nm
+                let testDeviceIdentifier: String                //  ma
+                let testSampleCollectionDate: String            //  sc
+                let testResult: TestResult                      //  tr
+                let testingCentreFacility: String               //  tc
             }
             
             struct Vaccination: HasCertificateData {
                 
-                let diseaseAgentTargeted: String            //  tg
-                let country: String                         //  co
-                let certificateIssuer: String               //  is
-                let certificateIdentifier: String           //  ci
+                let diseaseAgentTargeted: DiseaseAgentTargeted  //  tg
+                let country: String                             //  co
+                let certificateIssuer: String                   //  is
+                let certificateIdentifier: String               //  ci
                 
-                let numberInSeriesOfDoses: Int              //  dn
-                let dateOfVaccination: String               //  dt
-                let vaccineManufacturer: String             //  ma
-                let vaccineProduct: VaccineProduct          //  mp
-                let overallNumberDoses: Int                 //  sd
-                let vaccineProphylaxis: VaccineProphylaxis  //  vp
+                let numberInSeriesOfDoses: Int                  //  dn
+                let dateOfVaccination: String                   //  dt
+                let vaccineManufacturer: String                 //  ma
+                let vaccineProduct: VaccineProduct              //  mp
+                let overallNumberDoses: Int                     //  sd
+                let vaccineProphylaxis: VaccineProphylaxis      //  vp
             }
             
             case recovery(Recovery)

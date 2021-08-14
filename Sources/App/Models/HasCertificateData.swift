@@ -9,7 +9,7 @@ import Foundation
 
 protocol HasCertificateData {
     
-    var diseaseAgentTargeted: String { get }
+    var diseaseAgentTargeted: DiseaseAgentTargeted { get }
     var country: String { get }
     var certificateIssuer: String { get }
     var certificateIdentifier: String { get }
@@ -17,7 +17,7 @@ protocol HasCertificateData {
 
 extension COVIDPass.Data.CertificateData {
     
-    var diseaseAgentTargeted: String {
+    var diseaseAgentTargeted: DiseaseAgentTargeted {
         switch self {
         case .recovery(let cd as HasCertificateData),
              .test(let cd as HasCertificateData),

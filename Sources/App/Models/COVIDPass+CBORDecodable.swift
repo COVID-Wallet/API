@@ -16,6 +16,7 @@ protocol CBORDecodable {
 enum COVIDPassDecodeError: Error {
     
     case invalidCountry(country: String)
+    case invalidDiseaseAgent(diseaseAgent: String)
     case invalidPassType
     case invalidVaccine
     case malformedPass
@@ -35,10 +36,6 @@ extension COVIDPass: CBORDecodable {
               let four = map[.unsignedInt(4)], case let CBOR.unsignedInt(validUntil) = four,
               let negative = map[.negativeInt(259)] else {
             throw COVIDPassDecodeError.parseError
-        }
-        
-        guard country == "PT" else {
-            throw COVIDPassDecodeError.invalidCountry(country: country)
         }
         
         self.country = country
@@ -123,6 +120,10 @@ extension COVIDPass.Data.CertificateData {
             throw COVIDPassDecodeError.parseError
         }
         
+        guard let diseaseAgentTargeted = DiseaseAgentTargeted(code: diseaseAgentTargeted) else {
+            throw COVIDPassDecodeError.invalidDiseaseAgent(diseaseAgent: diseaseAgentTargeted)
+        }
+        
         let recoveryData = Recovery(diseaseAgentTargeted: diseaseAgentTargeted,
                                     country: country,
                                     certificateIssuer: certificateIssuer,
@@ -154,6 +155,10 @@ extension COVIDPass.Data.CertificateData {
               let tr = data[.utf8String("tr")], case let CBOR.utf8String(testResult) = tr,
               let tc = data[.utf8String("tc")], case let CBOR.utf8String(testingCentreFacility) = tc else {
             throw COVIDPassDecodeError.parseError
+        }
+        
+        guard let diseaseAgentTargeted = DiseaseAgentTargeted(code: diseaseAgentTargeted) else {
+            throw COVIDPassDecodeError.invalidDiseaseAgent(diseaseAgent: diseaseAgentTargeted)
         }
         
         let testName: String?
@@ -204,6 +209,10 @@ extension COVIDPass.Data.CertificateData {
               let sd = data[.utf8String("sd")], case let CBOR.unsignedInt(overallNumberDoses) = sd,
               let vp = data[.utf8String("vp")], case let CBOR.utf8String(vaccineProphylaxis) = vp else {
             throw COVIDPassDecodeError.parseError
+        }
+        
+        guard let diseaseAgentTargeted = DiseaseAgentTargeted(code: diseaseAgentTargeted) else {
+            throw COVIDPassDecodeError.invalidDiseaseAgent(diseaseAgent: diseaseAgentTargeted)
         }
         
         guard let vaccineProduct = VaccineProduct(code: vaccineProduct),

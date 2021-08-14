@@ -21,9 +21,7 @@ extension NameRepresentable {
     
     var fullName: String {
         [forenames, surnames].reduce("") {
-            guard $0 != "" else {
-                return $1
-            }
+            guard $0 != "" else { return $1 }
             
             return "\($0) \($1)"
         }.capitalized

@@ -30,15 +30,19 @@ class PassBuilder {
     let resourcesDirectory: String
     let teamIdentifier: String
     
+    let forceGenericTemplate: Bool
+    
     private var passURL: URL?
     
-    init(withPass pass: COVIDPass, qrCodeData: String, resourcesDirectory: String, teamIdentifier: String, passTypeIdentifier: String, certificateKey: String) {
+    init(withPass pass: COVIDPass, qrCodeData: String, resourcesDirectory: String, teamIdentifier: String, passTypeIdentifier: String, certificateKey: String, forceGenericTemplate: Bool = false) {
         self.covidPass = pass
         self.qrCodeData = qrCodeData
         self.resourcesDirectory = resourcesDirectory
         self.teamIdentifier = teamIdentifier
         self.passTypeIdentifier = passTypeIdentifier
         self.certificateKey = certificateKey
+        
+        self.forceGenericTemplate = forceGenericTemplate
     }
     
     func cleanup() {
@@ -65,19 +69,33 @@ class PassBuilder {
         return output
     }
     
-    private func passTemplateURL(certificateData: COVIDPass.Data.CertificateData) -> URL {
-        switch certificateData {
+    private func passTemplateURL(pass: COVIDPass) throws -> URL {
+        switch pass.data.certificateData {
         case .recovery:
-            return URL(fileURLWithPath: resourcesDirectory).appendingPathComponent("Recovery.pass")
+            if pass.country != "PT" || forceGenericTemplate {
+                throw BuilderError.notImplemented
+            } else {
+                return URL(fileURLWithPath: resourcesDirectory).appendingPathComponent("Recovery.pass")
+            }
+            
         case .test:
-            return URL(fileURLWithPath: resourcesDirectory).appendingPathComponent("Test.pass")
+            if pass.country != "PT" || forceGenericTemplate {
+                throw BuilderError.notImplemented
+            } else {
+                return URL(fileURLWithPath: resourcesDirectory).appendingPathComponent("Test.pass")
+            }
+            
         case .vaccination:
-            return URL(fileURLWithPath: resourcesDirectory).appendingPathComponent("Vaccination.pass")
+            if pass.country != "PT" || forceGenericTemplate {
+                return URL(fileURLWithPath: resourcesDirectory).appendingPathComponent("VaccinationGeneric.pass")
+            } else {
+                return URL(fileURLWithPath: resourcesDirectory).appendingPathComponent("VaccinationPT.pass")
+            }
         }
     }
     
     func buildUnsignedPass() throws {
-        let passTemplateURL = passTemplateURL(certificateData: covidPass.data.certificateData)
+        let passTemplateURL = try passTemplateURL(pass: covidPass)
         
         passURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
         
