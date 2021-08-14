@@ -55,6 +55,8 @@
             {
                 "label": "validFrom",
                 "key": "validFrom",
+                "dateStyle": "PKDateStyleFull",
+                "timeStyle": "PKDateStyleFull",
                 "value": "<<< FILL ME >>>"
             },
             {
