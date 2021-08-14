@@ -18,6 +18,7 @@ class PassBuilder {
         case manifestError
         case noPassURL
         case notImplemented
+        case positiveTest
         case resourceNotFound
         case signError
     }
@@ -25,16 +26,18 @@ class PassBuilder {
     let certificateKey: String
     let covidPass: COVIDPass
     let qrCodeData: String
+    let passTypeIdentifier: String
     let resourcesDirectory: String
     let teamIdentifier: String
     
     private var passURL: URL?
     
-    init(withPass pass: COVIDPass, qrCodeData: String, resourcesDirectory: String, teamIdentifier: String, certificateKey: String) {
+    init(withPass pass: COVIDPass, qrCodeData: String, resourcesDirectory: String, teamIdentifier: String, passTypeIdentifier: String, certificateKey: String) {
         self.covidPass = pass
         self.qrCodeData = qrCodeData
         self.resourcesDirectory = resourcesDirectory
         self.teamIdentifier = teamIdentifier
+        self.passTypeIdentifier = passTypeIdentifier
         self.certificateKey = certificateKey
     }
     
@@ -62,8 +65,19 @@ class PassBuilder {
         return output
     }
     
+    private func passTemplateURL(certificateData: COVIDPass.Data.CertificateData) -> URL {
+        switch certificateData {
+        case .recovery:
+            return URL(fileURLWithPath: resourcesDirectory).appendingPathComponent("Recovery.pass")
+        case .test:
+            return URL(fileURLWithPath: resourcesDirectory).appendingPathComponent("Test.pass")
+        case .vaccination:
+            return URL(fileURLWithPath: resourcesDirectory).appendingPathComponent("Vaccination.pass")
+        }
+    }
+    
     func buildUnsignedPass() throws {
-        let passTemplateURL = URL(fileURLWithPath: resourcesDirectory).appendingPathComponent("Template.pass")
+        let passTemplateURL = passTemplateURL(certificateData: covidPass.data.certificateData)
         
         passURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
         
@@ -82,6 +96,7 @@ class PassBuilder {
         }
         
         passJSON["teamIdentifier"] = teamIdentifier
+        passJSON["passTypeIdentifier"] = passTypeIdentifier
         passJSON["serialNumber"] = "\(Int(Date().timeIntervalSince1970))"
         passJSON["expirationDate"] = covidPass.expiryDatePassFormat
         
@@ -94,24 +109,40 @@ class PassBuilder {
         }
         
         if var generic = passJSON["generic"] as? [String: [[String: Any]]] {
+            generic["headerFields"]![0]["value"] = covidPass.country
+            
+            generic["primaryFields"]![0]["value"] = covidPass.data.name.humanReadable.shortName
+            
+            generic["secondaryFields"]![1]["value"] = covidPass.data.dateOfBirth
+            
+            generic["backFields"]![0]["value"] = covidPass.data.name.humanReadable.fullName
+            generic["backFields"]![1]["value"] = covidPass.expiryDateHumanFormat
+            generic["backFields"]![2]["value"] = covidPass.data.certificateData.certificateIdentifier
+            
             switch covidPass.data.certificateData {
             case let .vaccination(vaccination):
                 generic["headerFields"]![0]["value"] = "\(vaccination.numberInSeriesOfDoses)/\(vaccination.overallNumberDoses)"
                 generic["headerFields"]![1]["value"] = covidPass.country
                 
-                generic["primaryFields"]![0]["value"] = covidPass.data.name.humanReadable.shortName
-
                 generic["secondaryFields"]![0]["value"] = vaccination.dateOfVaccination
-                generic["secondaryFields"]![1]["value"] = covidPass.data.dateOfBirth
-
+                
                 generic["auxiliaryFields"]![0]["value"] = vaccination.vaccineProphylaxis.name
                 generic["auxiliaryFields"]![1]["value"] = vaccination.vaccineProduct.name
-
-                generic["backFields"]![0]["value"] = covidPass.data.name.humanReadable.fullName
-                generic["backFields"]![1]["value"] = covidPass.expiryDateHumanFormat
-                generic["backFields"]![2]["value"] = vaccination.certificateIdentifier
                 
-            case .recovery, .test:
+            case let .recovery(recovery):
+                generic["secondaryFields"]![0]["value"] = recovery.firstPositiveTestDate
+                
+                generic["backFields"]![1]["value"] = covidPass.validFromHumanFormat
+                generic["backFields"]![2]["value"] = covidPass.expiryDateHumanFormat
+                generic["backFields"]![3]["value"] = recovery.certificateIdentifier
+                
+            case let .test(test):
+                guard test.testResult == .notDetected else {
+                    throw BuilderError.positiveTest
+                }
+                
+                generic["secondaryFields"]![0]["value"] = covidPass.testSampleCollectionDateHumanFormat
+                
                 throw BuilderError.notImplemented
             }
             
@@ -155,7 +186,10 @@ class PassBuilder {
             throw BuilderError.noPassURL
         }
         
-        let shellCommand = "openssl smime -binary -sign -certfile \(resourcesDirectory)Certificates/WWDRCA.pem -signer \(resourcesDirectory)/Certificates/PassCertificate.pem -inkey \(resourcesDirectory)Certificates/PassKey.pem -in \(passURL.appendingPathComponent("manifest.json").path) -out \(passURL.appendingPathComponent("signature").path) -outform DER -passin pass:\(certificateKey)"
+        let shellCommand = "openssl smime -binary -sign -certfile \(resourcesDirectory)Certificates/WWDRCA.pem " +
+            "-signer \(resourcesDirectory)/Certificates/PassCertificate.pem -inkey \(resourcesDirectory)Certificates/PassKey.pem " +
+            "-in \(passURL.appendingPathComponent("manifest.json").path) -out \(passURL.appendingPathComponent("signature").path) " +
+            "-outform DER -passin pass:\(certificateKey)"
         
         guard shell(shellCommand) == "" else {
             throw BuilderError.signError

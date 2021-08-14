@@ -23,6 +23,7 @@ final class WalletPassGeneratorController {
     
     func generate(_ req: Request) throws -> Response {
         guard let certificateKey = Environment.get(EnvironmentKey.certificateKey.rawValue),
+              let passTypeIdentifier = Environment.get(EnvironmentKey.passTypeIdentifier.rawValue),
               let teamIdentifier = Environment.get(EnvironmentKey.teamIdentifier.rawValue) else {
             throw ResponseError.badEnvironment
         }
@@ -45,6 +46,7 @@ final class WalletPassGeneratorController {
                                       qrCodeData: qrCodeData,
                                       resourcesDirectory: req.application.directory.resourcesDirectory,
                                       teamIdentifier: teamIdentifier,
+                                      passTypeIdentifier: passTypeIdentifier,
                                       certificateKey: certificateKey)
         
         try passBuilder.buildUnsignedPass()

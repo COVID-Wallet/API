@@ -1,6 +1,6 @@
 {
     "formatVersion": 1,
-    "passTypeIdentifier": "pass.io.edr.covid19digitalcertificate",
+    "passTypeIdentifier": "<<< FILL ME - Use a pass type identifier that works with your pass certificate. >>>",
     "serialNumber": "<<< FILL ME - Any number will work in this field. >>>",
     "teamIdentifier": "<<< FILL ME - Use your Apple Developer team ID. >>>",
     "barcode": {

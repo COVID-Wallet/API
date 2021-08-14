@@ -2,13 +2,13 @@
   "logo@2x.png" : "94e68fde7c58e2102469506a817e41bae5872e9a",
   "logo.png" : "6bcd175551bba93788513d7c6b3021ae0df1762d",
   "logo@3x.png" : "5dc2a016e8548591dbe2628bb20ba56dc9b53e15",
-  "en.lproj\/pass.strings" : "915f94819dbe07ff5222d78c9c6d0ab35b154e6f",
-  "pt.lproj\/pass.strings" : "629e07f0bd4d7064fa6e27ad81121981649fc7f3",
-  "thumbnail@3x.png" : "7b45596f6f689d1fd48859e73d3daf2d624ca64b",
+  "en.lproj\/pass.strings" : "d291dc0b471cc35c4de680c8333453edcd074cdf",
+  "pt.lproj\/pass.strings" : "3edb8c4365e6a192da5eca9c96b4ab5673c77142",
+  "thumbnail@3x.png" : "fc0f3fb5436ac57fc844bd1214eecf3dbb18b3e1",
   "icon@2x.png" : "94e68fde7c58e2102469506a817e41bae5872e9a",
   "icon@3x.png" : "5dc2a016e8548591dbe2628bb20ba56dc9b53e15",
   "pass.json" : "<<pass.json.sha1>>",
   "icon.png" : "6bcd175551bba93788513d7c6b3021ae0df1762d",
-  "thumbnail.png" : "3fc5cf01588bfbcb622d484999168f02b5c9bf96",
-  "thumbnail@2x.png" : "bccf45a9b14e2027c1fc4dcd84a8be87b97fbc21"
+  "thumbnail.png" : "a7f52cb131d29b966bd854a6046b3d9fbf69a3c8",
+  "thumbnail@2x.png" : "9fbbc9e4973e069fee2003f73ec8cc6ec56ca181"
 }

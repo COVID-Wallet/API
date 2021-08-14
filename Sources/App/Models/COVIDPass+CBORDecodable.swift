@@ -164,6 +164,11 @@ extension COVIDPass.Data.CertificateData {
             testName = nil
         }
         
+        guard let testResult = TestResult(code: testResult),
+              let testType = TestType(code: testType) else {
+            throw COVIDPassDecodeError.notImplemented
+        }
+        
         let testData = Test(diseaseAgentTargeted: diseaseAgentTargeted,
                             country: country,
                             certificateIssuer: certificateIssuer,

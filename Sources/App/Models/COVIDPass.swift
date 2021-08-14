@@ -42,7 +42,6 @@ struct COVIDPass {
                 
                 let validFrom: String               //  df
                 let validUntil: String              //  du
-                
             }
             
             struct Test: HasCertificateData {
@@ -52,11 +51,11 @@ struct COVIDPass {
                 let certificateIssuer: String           //  is
                 let certificateIdentifier: String       //  ci
                 
-                let testType: String                    //  tt
+                let testType: TestType                  //  tt
                 let testName: String?                   //  nm
                 let testDeviceIdentifier: String        //  ma
                 let testSampleCollectionDate: String    //  sc
-                let testResult: String                  //  tr
+                let testResult: TestResult              //  tr
                 let testingCentreFacility: String       //  tc
             }
             

@@ -10,5 +10,6 @@ import Foundation
 enum EnvironmentKey: String {
     
     case certificateKey = "CERTIFICATE_KEY"
+    case passTypeIdentifier = "PASS_TYPE_IDENTIFIER"
     case teamIdentifier = "TEAM_IDENTIFIER"
 }

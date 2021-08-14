@@ -1,6 +1,6 @@
 {
     "formatVersion": 1,
-    "passTypeIdentifier": "pass.io.edr.covid19digitalcertificate",
+    "passTypeIdentifier": "<<< FILL ME - Use a pass type identifier that works with your pass certificate. >>>",
     "serialNumber": "<<< FILL ME - Any number will work in this field. >>>",
     "teamIdentifier": "<<< FILL ME - Use your Apple Developer team ID. >>>",
     "barcode": {
@@ -17,11 +17,6 @@
     "generic": {
         "headerFields": [
             {
-                "key": "doses",
-                "label": "doses",
-                "value": "<<< FILL ME >>>"
-            },
-            {
                 "key": "memberState",
                 "label": "memberState",
                 "value": "<<< FILL ME >>>"
@@ -37,7 +32,7 @@
         "secondaryFields": [
             {
                 "key": "data",
-                "label": "vaccinationDate",
+                "label": "firstPositiveTestDate",
                 "value": "<<< FILL ME >>>"
             },
             {
@@ -47,24 +42,15 @@
                 "textAlignment": "PKTextAlignmentRight"
             }
         ],
-        "auxiliaryFields": [
-            
-            {
-                "key": "vaccine",
-                "label": "vaccine",
-                "value": "<<< FILL ME >>>"
-            },
-            {
-                "key": "product",
-                "label": "product",
-                "value": "<<< FILL ME >>>",
-                "textAlignment": "PKTextAlignmentRight"
-            }
-        ],
         "backFields": [
             {
                 "key": "fullName",
                 "label": "fullName",
+                "value": "<<< FILL ME >>>"
+            },
+            {
+                "label": "validFrom",
+                "key": "validFrom",
                 "value": "<<< FILL ME >>>"
             },
             { 

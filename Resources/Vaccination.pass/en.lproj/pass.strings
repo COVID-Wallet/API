@@ -10,5 +10,4 @@
 "birthDate" = "Date of Birth";
 "memberState" = "Country";
 "identifier" = "Unique Certificate Identifier (UVCI)";
-"url" = "URL of the Original Certificate";
 "expirationDate" = "Expiration Date";
