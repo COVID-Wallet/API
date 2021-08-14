@@ -7,5 +7,5 @@
 "birthDate" = "Date of Birth";
 "memberState" = "Country";
 "identifier" = "Unique Certificate Identifier (UVCI)";
-"validFrom" = "Data de Início"
+"validFrom" = "Data de Início";
 "expirationDate" = "Expiration Date";
