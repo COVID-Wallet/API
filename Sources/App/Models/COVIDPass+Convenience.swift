@@ -42,7 +42,7 @@ extension COVIDPass {
         case "1119349007":
             return "Vacina COVID-19 (mRNA)"
         default:
-            return nil
+            return "Vacina COVID-19"
         }
     }
     
@@ -54,6 +54,8 @@ extension COVIDPass {
             return "Covid-19 Vaccine Janssen"
         case "EU/1/20/1528":
             return "Comirnaty"
+        case "EU/1/21/1529":
+            return "Vaxzevria"
         default:
             return nil
         }
