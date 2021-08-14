@@ -41,6 +41,15 @@ extension COVIDPass {
         return DateFormatterCache.shared.iso8601DateFormatter.string(from: dateOfBirth)
     }
     
+    var dateOfVaccinationPassFormat: String? {
+        guard case let COVIDPass.Data.CertificateData.vaccination(v) = data.certificateData,
+              let date = DateFormatterCache.shared.dateOnlyFormatter.date(from: v.dateOfVaccination) else {
+            return nil
+        }
+        
+        return DateFormatterCache.shared.iso8601DateFormatter.string(from: date)
+    }
+    
     var expiryDatePassFormat: String {
         DateFormatterCache.shared.iso8601DateFormatter.string(from: expiryDate)
     }

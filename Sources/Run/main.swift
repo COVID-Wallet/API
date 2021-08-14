@@ -3,9 +3,7 @@ import Vapor
 
 var env = try Environment.detect()
 
-if !env.isRelease {
-    try LoggingSystem.bootstrap(from: &env)
-}
+try LoggingSystem.bootstrap(from: &env)
 
 let app = Application(env)
 

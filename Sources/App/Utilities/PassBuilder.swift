@@ -53,15 +53,15 @@ class PassBuilder {
         }
     }
     
-    private func shell(_ command: String) -> String {
+    private func shell(_ command: String) throws -> String {
         let task = Process()
         let pipe = Pipe()
         
         task.standardOutput = pipe
         task.standardError = pipe
         task.arguments = ["-c", command]
-        task.launchPath = "/bin/zsh"
-        task.launch()
+        task.executableURL = URL(fileURLWithPath: "/bin/zsh")
+        try task.run()
         
         let data = pipe.fileHandleForReading.readDataToEndOfFile()
         let output = String(data: data, encoding: .utf8)!
@@ -140,7 +140,7 @@ class PassBuilder {
                 generic["headerFields"]![0]["value"] = "\(vaccination.numberInSeriesOfDoses)/\(vaccination.overallNumberDoses)"
                 generic["headerFields"]![1]["value"] = covidPass.country
                 
-                generic["secondaryFields"]![0]["value"] = vaccination.dateOfVaccination
+                generic["secondaryFields"]![0]["value"] = covidPass.dateOfVaccinationPassFormat
                 generic["secondaryFields"]![1]["value"] = covidPass.dateOfBirthPassFormat
                 
                 generic["auxiliaryFields"]![0]["value"] = vaccination.vaccineProphylaxis.name
@@ -212,7 +212,7 @@ class PassBuilder {
             "-in \(passURL.appendingPathComponent("manifest.json").path) -out \(passURL.appendingPathComponent("signature").path) " +
             "-outform DER -passin pass:\(certificateKey)"
         
-        guard shell(shellCommand) == "" else {
+        guard try shell(shellCommand) == "" else {
             throw BuilderError.signError
         }
     }
@@ -222,10 +222,8 @@ class PassBuilder {
             throw BuilderError.noPassURL
         }
         
-        _ = shell("cd \(passURL.path) && zip -r out.pkpass *")
+        _ = try shell("cd \(passURL.path) && zip -r out.pkpass *")
         
         return passURL.appendingPathComponent("out.pkpass")
-        
-        //  TODO: Error handling!
     }
 }
