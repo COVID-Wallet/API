@@ -53,18 +53,18 @@
                 "value": "<<< FILL ME >>>"
             },
             {
-                "label": "validFrom",
-                "key": "validFrom",
-                "dateStyle": "PKDateStyleFull",
-                "timeStyle": "PKDateStyleFull",
-                "value": "<<< FILL ME >>>"
-            },
-            {
                 "label": "birthDate",
                 "key": "birthDate",
                 "dateStyle": "PKDateStyleShort",
                 "timeStyle": "PKDateStyleNone",
                 "ignoresTimeZone": true,
+                "value": "<<< FILL ME >>>"
+            },
+            {
+                "label": "validFrom",
+                "key": "validFrom",
+                "dateStyle": "PKDateStyleFull",
+                "timeStyle": "PKDateStyleFull",
                 "value": "<<< FILL ME >>>"
             },
             {
