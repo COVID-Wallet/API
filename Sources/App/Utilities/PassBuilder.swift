@@ -151,8 +151,8 @@ class PassBuilder {
                 generic["secondaryFields"]![1]["value"] = covidPass.expiryDatePassFormat
                 
                 generic["backFields"]![1]["value"] = covidPass.validFromPassFormat
-                generic["backFields"]![2]["value"] = covidPass.expiryDatePassFormat
-                generic["backFields"]![3]["value"] = covidPass.dateOfBirthPassFormat
+                generic["backFields"]![2]["value"] = covidPass.dateOfBirthPassFormat
+                generic["backFields"]![3]["value"] = covidPass.data.certificateData.certificateIdentifier
                 
             case let .test(test):
                 guard test.testResult == .notDetected else {
