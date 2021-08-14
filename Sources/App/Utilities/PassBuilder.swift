@@ -17,6 +17,7 @@ class PassBuilder {
         case jsonError
         case manifestError
         case noPassURL
+        case notImplemented
         case resourceNotFound
         case signError
     }
@@ -93,20 +94,26 @@ class PassBuilder {
         }
         
         if var generic = passJSON["generic"] as? [String: [[String: Any]]] {
-            generic["headerFields"]![0]["value"] = "\(covidPass.data.vaccination.numberInSeriesOfDoses)/\(covidPass.data.vaccination.overallNumberDoses)"
-            generic["headerFields"]![1]["value"] = covidPass.country
-            
-            generic["primaryFields"]![0]["value"] = covidPass.shortName
+            switch covidPass.data.certificateData {
+            case let .vaccination(vaccination):
+                generic["headerFields"]![0]["value"] = "\(vaccination.numberInSeriesOfDoses)/\(vaccination.overallNumberDoses)"
+                generic["headerFields"]![1]["value"] = covidPass.country
+                
+                generic["primaryFields"]![0]["value"] = covidPass.data.name.humanReadable.shortName
 
-            generic["secondaryFields"]![0]["value"] = covidPass.data.vaccination.dateOfVaccination
-            generic["secondaryFields"]![1]["value"] = covidPass.data.dateOfBirth
+                generic["secondaryFields"]![0]["value"] = vaccination.dateOfVaccination
+                generic["secondaryFields"]![1]["value"] = covidPass.data.dateOfBirth
 
-            generic["auxiliaryFields"]![0]["value"] = covidPass.prophylaxisName
-            generic["auxiliaryFields"]![1]["value"] = covidPass.productName
+                generic["auxiliaryFields"]![0]["value"] = vaccination.vaccineProphylaxis.name
+                generic["auxiliaryFields"]![1]["value"] = vaccination.vaccineProduct.name
 
-            generic["backFields"]![0]["value"] = covidPass.fullName
-            generic["backFields"]![1]["value"] = covidPass.expiryDateHumanFormat
-            generic["backFields"]![2]["value"] = covidPass.data.vaccination.certificateIdentifier
+                generic["backFields"]![0]["value"] = covidPass.data.name.humanReadable.fullName
+                generic["backFields"]![1]["value"] = covidPass.expiryDateHumanFormat
+                generic["backFields"]![2]["value"] = vaccination.certificateIdentifier
+                
+            case .recovery, .test:
+                throw BuilderError.notImplemented
+            }
             
             passJSON["generic"] = generic
         }

@@ -17,6 +17,9 @@ enum COVIDPassDecodeError: Error {
     
     case invalidCountry(country: String)
     case invalidPassType
+    case invalidVaccine
+    case malformedPass
+    case notImplemented
     case parseError
 }
 
@@ -59,15 +62,11 @@ extension COVIDPass.Data: CBORDecodable {
             throw COVIDPassDecodeError.parseError
         }
         
-        guard let v = data[.utf8String("v")] else {
-            throw COVIDPassDecodeError.invalidPassType
-        }
-        
         self.dateOfBirth = dateOfBirth
         self.version = version
         
         self.name = try COVIDPass.Data.Name(cborData: nam)
-        self.vaccination = try COVIDPass.Data.Vaccination(cborData: v)
+        self.certificateData = try COVIDPass.Data.CertificateData.init(cborData: data)
     }
 }
 
@@ -90,39 +89,134 @@ extension COVIDPass.Data.Name: CBORDecodable {
     }
 }
 
-extension COVIDPass.Data.Vaccination: CBORDecodable {
+extension COVIDPass.Data.CertificateData {
     
-    init(cborData: CBOR) throws {
-        guard case let CBOR.array(array) = cborData else {
+    init(cborData: [CBOR: CBOR]) throws {
+        if let r = cborData[.utf8String("r")] {
+            self = try .init(recoveryCBORData: r)
+        } else if let t = cborData[.utf8String("t")] {
+            self = try .init(testCBORData: t)
+        } else if let v = cborData[.utf8String("v")] {
+            self = try .init(vaccineCBORData: v)
+        } else {
+            throw COVIDPassDecodeError.invalidPassType
+        }
+    }
+    
+    init(recoveryCBORData: CBOR) throws {
+        guard case let CBOR.array(array) = recoveryCBORData else {
             throw COVIDPassDecodeError.parseError
         }
         
-        guard let data = array.last else {
-            throw COVIDPassDecodeError.invalidPassType
+        guard array.count == 1, let data = array.last else {
+            throw COVIDPassDecodeError.malformedPass
         }
         
         guard let ci = data[.utf8String("ci")], case let CBOR.utf8String(certificateIdentifier) = ci,
               let co = data[.utf8String("co")], case let CBOR.utf8String(country) = co,
+              let `is` = data[.utf8String("is")], case let CBOR.utf8String(certificateIssuer) = `is`,
+              let tg = data[.utf8String("tg")], case let CBOR.utf8String(diseaseAgentTargeted) = tg,
+              
+              let fr = data[.utf8String("fr")], case let CBOR.utf8String(firstPositiveTestDate) = fr,
+              let df = data[.utf8String("df")], case let CBOR.utf8String(validFrom) = df,
+              let du = data[.utf8String("du")], case let CBOR.utf8String(validUntil) = du else {
+            throw COVIDPassDecodeError.parseError
+        }
+        
+        let recoveryData = Recovery(diseaseAgentTargeted: diseaseAgentTargeted,
+                                    country: country,
+                                    certificateIssuer: certificateIssuer,
+                                    certificateIdentifier: certificateIdentifier,
+                                    firstPositiveTestDate: firstPositiveTestDate,
+                                    validFrom: validFrom,
+                                    validUntil: validUntil)
+        
+        self = .recovery(recoveryData)
+    }
+    
+    init(testCBORData: CBOR) throws {
+        guard case let CBOR.array(array) = testCBORData else {
+            throw COVIDPassDecodeError.parseError
+        }
+        
+        guard array.count == 1, let data = array.last else {
+            throw COVIDPassDecodeError.malformedPass
+        }
+        
+        guard let ci = data[.utf8String("ci")], case let CBOR.utf8String(certificateIdentifier) = ci,
+              let co = data[.utf8String("co")], case let CBOR.utf8String(country) = co,
+              let `is` = data[.utf8String("is")], case let CBOR.utf8String(certificateIssuer) = `is`,
+              let tg = data[.utf8String("tg")], case let CBOR.utf8String(diseaseAgentTargeted) = tg,
+              
+              let tt = data[.utf8String("tt")], case let CBOR.utf8String(testType) = tt,
+              let ma = data[.utf8String("ma")], case let CBOR.utf8String(testDeviceIdentifier) = ma,
+              let sc = data[.utf8String("sc")], case let CBOR.utf8String(testSampleCollectionDate) = sc,
+              let tr = data[.utf8String("tr")], case let CBOR.utf8String(testResult) = tr,
+              let tc = data[.utf8String("tc")], case let CBOR.utf8String(testingCentreFacility) = tc else {
+            throw COVIDPassDecodeError.parseError
+        }
+        
+        let testName: String?
+        
+        if let tn = data[.utf8String("tn")], case let CBOR.utf8String(unwrappedTestName) = tn {
+            testName = unwrappedTestName
+        } else {
+            testName = nil
+        }
+        
+        let testData = Test(diseaseAgentTargeted: diseaseAgentTargeted,
+                            country: country,
+                            certificateIssuer: certificateIssuer,
+                            certificateIdentifier: certificateIdentifier,
+                            testType: testType,
+                            testName: testName,
+                            testDeviceIdentifier: testDeviceIdentifier,
+                            testSampleCollectionDate: testSampleCollectionDate,
+                            testResult: testResult,
+                            testingCentreFacility: testingCentreFacility)
+        
+        self = .test(testData)
+    }
+    
+    init(vaccineCBORData: CBOR) throws {
+        guard case let CBOR.array(array) = vaccineCBORData else {
+            throw COVIDPassDecodeError.parseError
+        }
+        
+        guard array.count == 1, let data = array.last else {
+            throw COVIDPassDecodeError.malformedPass
+        }
+        
+        guard let ci = data[.utf8String("ci")], case let CBOR.utf8String(certificateIdentifier) = ci,
+              let co = data[.utf8String("co")], case let CBOR.utf8String(country) = co,
+              let `is` = data[.utf8String("is")], case let CBOR.utf8String(certificateIssuer) = `is`,
+              let tg = data[.utf8String("tg")], case let CBOR.utf8String(diseaseAgentTargeted) = tg,
+              
               let dn = data[.utf8String("dn")], case let CBOR.unsignedInt(numberInSeriesOfDoses) = dn,
               let dt = data[.utf8String("dt")], case let CBOR.utf8String(dateOfVaccination) = dt,
-              let `is` = data[.utf8String("is")], case let CBOR.utf8String(certificateIssuer) = `is`,
               let ma = data[.utf8String("ma")], case let CBOR.utf8String(vaccineManufacturer) = ma,
               let mp = data[.utf8String("mp")], case let CBOR.utf8String(vaccineProduct) = mp,
               let sd = data[.utf8String("sd")], case let CBOR.unsignedInt(overallNumberDoses) = sd,
-              let tg = data[.utf8String("tg")], case let CBOR.utf8String(diseaseAgentTargeted) = tg,
               let vp = data[.utf8String("vp")], case let CBOR.utf8String(vaccineProphylaxis) = vp else {
             throw COVIDPassDecodeError.parseError
         }
         
-        self.certificateIdentifier = certificateIdentifier
-        self.country = country
-        self.numberInSeriesOfDoses = Int(numberInSeriesOfDoses)
-        self.dateOfVaccination = dateOfVaccination
-        self.certificateIssuer = certificateIssuer
-        self.vaccineManufacturer = vaccineManufacturer
-        self.vaccineProduct = vaccineProduct
-        self.overallNumberDoses = Int(overallNumberDoses)
-        self.diseaseAgentTargeted = diseaseAgentTargeted
-        self.vaccineProphylaxis = vaccineProphylaxis
+        guard let vaccineProduct = VaccineProduct(code: vaccineProduct),
+              let vaccineProphylaxis = VaccineProphylaxis(code: vaccineProphylaxis) else {
+            throw COVIDPassDecodeError.invalidVaccine
+        }
+        
+        let vaccinationData = Vaccination(diseaseAgentTargeted: diseaseAgentTargeted,
+                                          country: country,
+                                          certificateIssuer: certificateIssuer,
+                                          certificateIdentifier: certificateIdentifier,
+                                          numberInSeriesOfDoses: Int(numberInSeriesOfDoses),
+                                          dateOfVaccination: dateOfVaccination,
+                                          vaccineManufacturer: vaccineManufacturer,
+                                          vaccineProduct: vaccineProduct,
+                                          overallNumberDoses: Int(overallNumberDoses),
+                                          vaccineProphylaxis: vaccineProphylaxis)
+        
+        self = .vaccination(vaccinationData)
     }
 }

@@ -7,12 +7,6 @@
 
 import Foundation
 
-protocol NameRepresentable {
-    
-    var forenames: String { get }
-    var surnames: String { get }
-}
-
 struct COVIDPass {
     
     struct Data {
@@ -35,24 +29,61 @@ struct COVIDPass {
             let standardised: Standardised
         }
         
-        struct Vaccination {
+        enum CertificateData {
             
-            let certificateIdentifier: String   //  ci
-            let country: String                 //  co
-            let numberInSeriesOfDoses: Int      //  dn
-            let dateOfVaccination: String       //  dt
-            let certificateIssuer: String       //  is
-            let vaccineManufacturer: String     //  ma
-            let vaccineProduct: String          //  mp
-            let overallNumberDoses: Int         //  sd
-            let diseaseAgentTargeted: String    //  tg
-            let vaccineProphylaxis: String      //  vp
+            struct Recovery: HasCertificateData {
+                
+                let diseaseAgentTargeted: String    //  tg
+                let country: String                 //  co
+                let certificateIssuer: String       //  is
+                let certificateIdentifier: String   //  ci
+                
+                let firstPositiveTestDate: String   //  fr
+                
+                let validFrom: String               //  df
+                let validUntil: String              //  du
+                
+            }
+            
+            struct Test: HasCertificateData {
+                
+                let diseaseAgentTargeted: String        //  tg
+                let country: String                     //  co
+                let certificateIssuer: String           //  is
+                let certificateIdentifier: String       //  ci
+                
+                let testType: String                    //  tt
+                let testName: String?                   //  nm
+                let testDeviceIdentifier: String        //  ma
+                let testSampleCollectionDate: String    //  sc
+                let testResult: String                  //  tr
+                let testingCentreFacility: String       //  tc
+            }
+            
+            struct Vaccination: HasCertificateData {
+                
+                let diseaseAgentTargeted: String            //  tg
+                let country: String                         //  co
+                let certificateIssuer: String               //  is
+                let certificateIdentifier: String           //  ci
+                
+                let numberInSeriesOfDoses: Int              //  dn
+                let dateOfVaccination: String               //  dt
+                let vaccineManufacturer: String             //  ma
+                let vaccineProduct: VaccineProduct          //  mp
+                let overallNumberDoses: Int                 //  sd
+                let vaccineProphylaxis: VaccineProphylaxis  //  vp
+            }
+            
+            case recovery(Recovery)
+            case test(Test)
+            case vaccination(Vaccination)
         }
         
-        let dateOfBirth: String         //  dob
-        let name: Name                  //  nam
-        let vaccination: Vaccination    //  v
-        let version: String             //  ver
+        let dateOfBirth: String                 //  dob
+        let name: Name                          //  nam
+        let certificateData: CertificateData    //  r / t / v
+        let version: String                     //  ver
     }
     
     let data: Data          //  -260
