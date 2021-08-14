@@ -9,7 +9,7 @@
         "messageEncoding": "utf8"
     },
     "expirationDate": "<<< FILL ME - 1970-01-01T00:00:00-00:00 >>>",
-    "organizationName": "Ministério da Saúde",
+    "organizationName": "COVID Wallet (https://covidwallet.pt)",
     "description": "description",
     "logoText": "logoText",
     "foregroundColor": "rgb(255, 255, 255)",
@@ -37,12 +37,17 @@
         "secondaryFields": [
             {
                 "key": "data",
+                "dateStyle": "PKDateStyleShort",
+                "timeStyle": "PKDateStyleNone",
                 "label": "vaccinationDate",
                 "value": "<<< FILL ME >>>"
             },
             {
                 "key": "birthDate",
                 "label": "birthDate",
+                "dateStyle": "PKDateStyleShort",
+                "timeStyle": "PKDateStyleNone",
+                "ignoresTimeZone": true,
                 "value": "<<< FILL ME >>>",
                 "textAlignment": "PKTextAlignmentRight"
             }
@@ -67,9 +72,11 @@
                 "label": "fullName",
                 "value": "<<< FILL ME >>>"
             },
-            { 
+            {
                 "label": "expirationDate",
                 "key": "expirationDate",
+                "dateStyle": "PKDateStyleFull",
+                "timeStyle": "PKDateStyleFull",
                 "value": "<<< FILL ME >>>"
             },
             {

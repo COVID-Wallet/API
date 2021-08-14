@@ -20,9 +20,7 @@ class DateFormatterCache {
     }
     
     lazy var dateOnlyFormatter: DateFormatter = makeDateFormatter(dateFormat: "yyyy-MM-dd")
-    lazy var dateOnlyHumanReadableFormatter: DateFormatter = makeDateFormatter(dateFormat: "dd-MM-yyyy")
-    lazy var humanReadableFormatter: DateFormatter = makeDateFormatter(dateFormat: "dd-MM-yyyy HH:mm:ss")
-    lazy var passFormatter: DateFormatter = makeDateFormatter(dateFormat: "yyyy-MM-dd'T'HH:mm:ss'-00:00'")
+    lazy var iso8601DateFormatter: DateFormatter = makeDateFormatter(dateFormat: "yyyy-MM-dd'T'HH:mm:ssxxxxx")
     
     private init() {}
 }

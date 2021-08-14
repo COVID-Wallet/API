@@ -31,24 +31,39 @@ extension COVIDPass {
         }
     }
     
+    var dateOfBirth: Date? {
+        return DateFormatterCache.shared.dateOnlyFormatter.date(from: data.dateOfBirth)
+    }
+    
+    var dateOfBirthPassFormat: String? {
+        guard let dateOfBirth = dateOfBirth else { return nil }
+        
+        return DateFormatterCache.shared.iso8601DateFormatter.string(from: dateOfBirth)
+    }
+    
     var expiryDatePassFormat: String {
-        DateFormatterCache.shared.passFormatter.string(from: expiryDate)
+        DateFormatterCache.shared.iso8601DateFormatter.string(from: expiryDate)
     }
     
-    var expiryDateHumanFormat: String {
-        DateFormatterCache.shared.humanReadableFormatter.string(from: expiryDate)
+    var validFromPassFormat: String {
+        DateFormatterCache.shared.iso8601DateFormatter.string(from: validFromDate)
     }
     
-    var validFromHumanFormat: String {
-        DateFormatterCache.shared.humanReadableFormatter.string(from: validFromDate)
+    var recoveryFirstPositiveDatePassFormat: String? {
+        guard case let COVIDPass.Data.CertificateData.recovery(r) = data.certificateData,
+              let date = DateFormatterCache.shared.dateOnlyFormatter.date(from: r.firstPositiveTestDate) else {
+            return nil
+        }
+        
+        return DateFormatterCache.shared.iso8601DateFormatter.string(from: date)
     }
     
-    var testSampleCollectionDateHumanFormat: String? {
+    var testSampleCollectionDatePassFormat: String? {
         guard case let COVIDPass.Data.CertificateData.test(t) = data.certificateData,
               let date = DateFormatterCache.shared.dateOnlyFormatter.date(from: t.testSampleCollectionDate) else {
             return nil
         }
         
-        return DateFormatterCache.shared.dateOnlyHumanReadableFormatter.string(from: date)
+        return DateFormatterCache.shared.iso8601DateFormatter.string(from: date)
     }
 }

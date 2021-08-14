@@ -131,10 +131,8 @@ class PassBuilder {
             
             generic["primaryFields"]![0]["value"] = covidPass.data.name.humanReadable.shortName
             
-            generic["secondaryFields"]![1]["value"] = covidPass.data.dateOfBirth
-            
             generic["backFields"]![0]["value"] = covidPass.data.name.humanReadable.fullName
-            generic["backFields"]![1]["value"] = covidPass.expiryDateHumanFormat
+            generic["backFields"]![1]["value"] = covidPass.expiryDatePassFormat
             generic["backFields"]![2]["value"] = covidPass.data.certificateData.certificateIdentifier
             
             switch covidPass.data.certificateData {
@@ -143,25 +141,30 @@ class PassBuilder {
                 generic["headerFields"]![1]["value"] = covidPass.country
                 
                 generic["secondaryFields"]![0]["value"] = vaccination.dateOfVaccination
+                generic["secondaryFields"]![1]["value"] = covidPass.dateOfBirthPassFormat
                 
                 generic["auxiliaryFields"]![0]["value"] = vaccination.vaccineProphylaxis.name
                 generic["auxiliaryFields"]![1]["value"] = vaccination.vaccineProduct.name
                 
-            case let .recovery(recovery):
-                generic["secondaryFields"]![0]["value"] = recovery.firstPositiveTestDate
+            case .recovery:
+                generic["secondaryFields"]![0]["value"] = covidPass.recoveryFirstPositiveDatePassFormat
+                generic["secondaryFields"]![1]["value"] = covidPass.expiryDatePassFormat
                 
-                generic["backFields"]![1]["value"] = covidPass.validFromHumanFormat
-                generic["backFields"]![2]["value"] = covidPass.expiryDateHumanFormat
-                generic["backFields"]![3]["value"] = recovery.certificateIdentifier
+                generic["backFields"]![1]["value"] = covidPass.validFromPassFormat
+                generic["backFields"]![2]["value"] = covidPass.expiryDatePassFormat
+                generic["backFields"]![3]["value"] = covidPass.dateOfBirthPassFormat
                 
             case let .test(test):
                 guard test.testResult == .notDetected else {
                     throw BuilderError.positiveTest
                 }
                 
-                generic["secondaryFields"]![0]["value"] = covidPass.testSampleCollectionDateHumanFormat
+                generic["secondaryFields"]![0]["value"] = covidPass.testSampleCollectionDatePassFormat
+                generic["secondaryFields"]![1]["value"] = covidPass.expiryDatePassFormat
                 
-                throw BuilderError.notImplemented
+                generic["auxiliaryFields"]![0]["value"] = test.testType.name
+                
+                generic["backFields"]![1]["value"] = covidPass.dateOfBirthPassFormat
             }
             
             passJSON["generic"] = generic
