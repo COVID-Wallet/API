@@ -5,7 +5,6 @@
 //  Created by Eduardo Almeida on 10/08/2021.
 //
 
-import Foundation
 import SwiftCBOR
 
 protocol CBORDecodable {

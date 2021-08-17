@@ -31,6 +31,13 @@ struct COVIDPass {
         
         enum CertificateData {
             
+            enum BaseType {
+                
+                case recovery
+                case test
+                case vaccination
+            }
+            
             struct Recovery: HasCertificateData {
                 
                 let diseaseAgentTargeted: DiseaseAgentTargeted  //  tg
@@ -77,6 +84,17 @@ struct COVIDPass {
             case recovery(Recovery)
             case test(Test)
             case vaccination(Vaccination)
+            
+            var type: BaseType {
+                switch self {
+                case .recovery:
+                    return .recovery
+                case .test:
+                    return .test
+                case .vaccination:
+                    return .vaccination
+                }
+            }
         }
         
         let dateOfBirth: String                 //  dob

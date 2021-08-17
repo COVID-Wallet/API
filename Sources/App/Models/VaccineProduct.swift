@@ -5,8 +5,6 @@
 //  Created by Eduardo Almeida on 14/08/2021.
 //
 
-import Foundation
-
 enum VaccineProduct {
     
     case comirnaty

@@ -5,8 +5,6 @@
 //  Created by Eduardo Almeida on 11/08/2021.
 //
 
-import Foundation
-
 import base45_swift
 import SWCompression
 import SwiftCBOR

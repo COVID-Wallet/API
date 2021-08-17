@@ -17,6 +17,12 @@ class PassBuilder {
         static let none = Overrides(doses: nil, shortName: nil)
     }
     
+    struct GeneratedPassData {
+        
+        let name: String
+        let type: COVIDPass.Data.CertificateData.BaseType
+    }
+    
     enum BuilderError: Error {
         
         case badEnvironment
@@ -44,6 +50,10 @@ class PassBuilder {
     
     private var passURL: URL?
     
+    private var generatedPassData: GeneratedPassData?
+    
+    var passData: GeneratedPassData? { generatedPassData }
+    
     init(withPass pass: COVIDPass, qrCodeData: String, resourcesDirectory: String, teamIdentifier: String, passTypeIdentifier: String, certificateKey: String, forceGenericTemplate: Bool = false, overrides: Overrides = .none) {
         self.covidPass = pass
         self.qrCodeData = qrCodeData
@@ -65,21 +75,7 @@ class PassBuilder {
         }
     }
     
-    private func shell(_ command: String) throws -> String {
-        let task = Process()
-        let pipe = Pipe()
-        
-        task.standardOutput = pipe
-        task.standardError = pipe
-        task.arguments = ["-c", command]
-        task.executableURL = URL(fileURLWithPath: "/bin/zsh")
-        try task.run()
-        
-        let data = pipe.fileHandleForReading.readDataToEndOfFile()
-        let output = String(data: data, encoding: .utf8)!
-        
-        return output
-    }
+    
     
     private func passTemplateURL(pass: COVIDPass) throws -> URL {
         switch pass.data.certificateData {
@@ -139,9 +135,11 @@ class PassBuilder {
         }
         
         if var generic = passJSON["generic"] as? [String: [[String: Any]]] {
+            let shortName = overrides.shortName ?? covidPass.data.name.humanReadable.shortName
+            
             generic["headerFields"]![0]["value"] = covidPass.country
             
-            generic["primaryFields"]![0]["value"] = overrides.shortName ?? covidPass.data.name.humanReadable.shortName
+            generic["primaryFields"]![0]["value"] = shortName
             
             generic["backFields"]![0]["value"] = covidPass.data.name.humanReadable.fullName
             generic["backFields"]![1]["value"] = covidPass.expiryDatePassFormat
@@ -158,6 +156,8 @@ class PassBuilder {
                 generic["auxiliaryFields"]![0]["value"] = vaccination.vaccineProphylaxis.name
                 generic["auxiliaryFields"]![1]["value"] = vaccination.vaccineProduct.name
                 
+                generatedPassData = .init(name: shortName, type: .vaccination)
+                
             case .recovery:
                 generic["secondaryFields"]![0]["value"] = covidPass.recoveryFirstPositiveDatePassFormat
                 generic["secondaryFields"]![1]["value"] = covidPass.expiryDatePassFormat
@@ -165,6 +165,8 @@ class PassBuilder {
                 generic["backFields"]![1]["value"] = covidPass.dateOfBirthPassFormat
                 generic["backFields"]![2]["value"] = covidPass.validFromPassFormat
                 generic["backFields"]![3]["value"] = covidPass.data.certificateData.certificateIdentifier
+                
+                generatedPassData = .init(name: shortName, type: .recovery)
                 
             case let .test(test):
                 guard test.testResult == .notDetected else {
@@ -177,6 +179,8 @@ class PassBuilder {
                 generic["auxiliaryFields"]![0]["value"] = test.testType.name
                 
                 generic["backFields"]![1]["value"] = covidPass.dateOfBirthPassFormat
+                
+                generatedPassData = .init(name: shortName, type: .test)
             }
             
             passJSON["generic"] = generic
@@ -224,7 +228,7 @@ class PassBuilder {
             "-in \(passURL.appendingPathComponent("manifest.json").path) -out \(passURL.appendingPathComponent("signature").path) " +
             "-outform DER -passin pass:\(certificateKey)"
         
-        guard try shell(shellCommand) == "" else {
+        guard try Shell.execute(shellCommand) == "" else {
             throw BuilderError.signError
         }
     }
@@ -234,7 +238,7 @@ class PassBuilder {
             throw BuilderError.noPassURL
         }
         
-        _ = try shell("cd \(passURL.path) && zip -r out.pkpass *")
+        _ = try Shell.execute("cd \(passURL.path) && zip -r out.pkpass *")
         
         return passURL.appendingPathComponent("out.pkpass")
     }
