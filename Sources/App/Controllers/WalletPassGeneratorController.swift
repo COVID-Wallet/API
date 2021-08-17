@@ -40,6 +40,9 @@ final class WalletPassGeneratorController {
             qrCodeData = qcd
         }
         
+        let dosesOverride = try? req.content.get(String.self, at: "dosesOverride")
+        let shortNameOverride = try? req.content.get(String.self, at: "shortNameOverride")
+        
         let covidPass = try QRCodeParser.parse(qrCodeData)
         
         let passBuilder = PassBuilder(withPass: covidPass,
@@ -47,7 +50,8 @@ final class WalletPassGeneratorController {
                                       resourcesDirectory: req.application.directory.resourcesDirectory,
                                       teamIdentifier: teamIdentifier,
                                       passTypeIdentifier: passTypeIdentifier,
-                                      certificateKey: certificateKey)
+                                      certificateKey: certificateKey,
+                                      overrides: PassBuilder.Overrides(doses: dosesOverride, shortName: shortNameOverride))
         
         try passBuilder.buildUnsignedPass()
         try passBuilder.signPass()

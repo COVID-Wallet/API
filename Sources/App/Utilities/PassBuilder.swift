@@ -9,6 +9,14 @@ import Foundation
 
 class PassBuilder {
     
+    struct Overrides {
+        
+        let doses: String?
+        let shortName: String?
+        
+        static let none = Overrides(doses: nil, shortName: nil)
+    }
+    
     enum BuilderError: Error {
         
         case badEnvironment
@@ -32,9 +40,11 @@ class PassBuilder {
     
     let forceGenericTemplate: Bool
     
+    let overrides: Overrides
+    
     private var passURL: URL?
     
-    init(withPass pass: COVIDPass, qrCodeData: String, resourcesDirectory: String, teamIdentifier: String, passTypeIdentifier: String, certificateKey: String, forceGenericTemplate: Bool = false) {
+    init(withPass pass: COVIDPass, qrCodeData: String, resourcesDirectory: String, teamIdentifier: String, passTypeIdentifier: String, certificateKey: String, forceGenericTemplate: Bool = false, overrides: Overrides = .none) {
         self.covidPass = pass
         self.qrCodeData = qrCodeData
         self.resourcesDirectory = resourcesDirectory
@@ -43,6 +53,8 @@ class PassBuilder {
         self.certificateKey = certificateKey
         
         self.forceGenericTemplate = forceGenericTemplate
+        
+        self.overrides = overrides
     }
     
     func cleanup() {
@@ -129,7 +141,7 @@ class PassBuilder {
         if var generic = passJSON["generic"] as? [String: [[String: Any]]] {
             generic["headerFields"]![0]["value"] = covidPass.country
             
-            generic["primaryFields"]![0]["value"] = covidPass.data.name.humanReadable.shortName
+            generic["primaryFields"]![0]["value"] = overrides.shortName ?? covidPass.data.name.humanReadable.shortName
             
             generic["backFields"]![0]["value"] = covidPass.data.name.humanReadable.fullName
             generic["backFields"]![1]["value"] = covidPass.expiryDatePassFormat
@@ -137,7 +149,7 @@ class PassBuilder {
             
             switch covidPass.data.certificateData {
             case let .vaccination(vaccination):
-                generic["headerFields"]![0]["value"] = "\(vaccination.numberInSeriesOfDoses)/\(vaccination.overallNumberDoses)"
+                generic["headerFields"]![0]["value"] = overrides.doses ?? "\(vaccination.numberInSeriesOfDoses)/\(vaccination.overallNumberDoses)"
                 generic["headerFields"]![1]["value"] = covidPass.country
                 
                 generic["secondaryFields"]![0]["value"] = covidPass.dateOfVaccinationPassFormat
