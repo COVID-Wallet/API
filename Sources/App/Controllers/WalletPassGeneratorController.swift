@@ -40,8 +40,16 @@ final class WalletPassGeneratorController {
             qrCodeData = qcd
         }
         
-        let dosesOverride = try? req.content.get(String.self, at: "dosesOverride")
-        let shortNameOverride = try? req.content.get(String.self, at: "shortNameOverride")
+        var dosesOverride = try? req.content.get(String.self, at: "dosesOverride")
+        var shortNameOverride = try? req.content.get(String.self, at: "shortNameOverride")
+        
+        if dosesOverride == "" {
+            dosesOverride = nil
+        }
+        
+        if shortNameOverride == "" {
+            shortNameOverride = nil
+        }
         
         let covidPass = try QRCodeParser.parse(qrCodeData)
         
