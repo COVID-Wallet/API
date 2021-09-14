@@ -69,7 +69,7 @@ extension COVIDPass {
     
     var testSampleCollectionDatePassFormat: String? {
         guard case let COVIDPass.Data.CertificateData.test(t) = data.certificateData,
-              let date = DateFormatterCache.shared.dateOnlyFormatter.date(from: t.testSampleCollectionDate) else {
+              let date = DateFormatterCache.shared.iso8601DateFormatter.date(from: t.testSampleCollectionDate) else {
             return nil
         }
         
