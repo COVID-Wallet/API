@@ -15,7 +15,9 @@ class PassBuilder {
         let language: SupportedLanguage?
         let shortName: String?
         
-        static let none = Overrides(doses: nil, language: nil, shortName: nil)
+        static let none = Overrides(doses: nil,
+                                    language: nil,
+                                    shortName: nil)
     }
     
     struct GeneratedPassData {
@@ -45,8 +47,6 @@ class PassBuilder {
     let resourcesDirectory: String
     let teamIdentifier: String
     
-    let forceGenericTemplate: Bool
-    
     let overrides: Overrides
     
     private var passURL: URL?
@@ -55,15 +55,13 @@ class PassBuilder {
     
     var passData: GeneratedPassData? { generatedPassData }
     
-    init(withPass pass: COVIDPass, qrCodeData: String, resourcesDirectory: String, teamIdentifier: String, passTypeIdentifier: String, certificateKey: String, forceGenericTemplate: Bool = false, overrides: Overrides = .none) {
+    init(withPass pass: COVIDPass, qrCodeData: String, resourcesDirectory: String, teamIdentifier: String, passTypeIdentifier: String, certificateKey: String, overrides: Overrides = .none) {
         self.covidPass = pass
         self.qrCodeData = qrCodeData
         self.resourcesDirectory = resourcesDirectory
         self.teamIdentifier = teamIdentifier
         self.passTypeIdentifier = passTypeIdentifier
         self.certificateKey = certificateKey
-        
-        self.forceGenericTemplate = forceGenericTemplate
         
         self.overrides = overrides
     }
@@ -79,21 +77,21 @@ class PassBuilder {
     private func generatePassTemplateURL() throws -> URL {
         switch covidPass.data.certificateData {
         case .recovery:
-            if covidPass.country != "PT" || forceGenericTemplate {
+            if covidPass.country != "PT" || overrides.language != .portuguese {
                 throw BuilderError.notImplemented
             } else {
                 return URL(fileURLWithPath: resourcesDirectory).appendingPathComponent("Recovery.pass")
             }
             
         case .test:
-            if covidPass.country != "PT" || forceGenericTemplate {
+            if covidPass.country != "PT" || overrides.language != .portuguese {
                 throw BuilderError.notImplemented
             } else {
                 return URL(fileURLWithPath: resourcesDirectory).appendingPathComponent("Test.pass")
             }
             
         case .vaccination:
-            if covidPass.country != "PT" || forceGenericTemplate {
+            if covidPass.country != "PT" || overrides.language != .portuguese {
                 return URL(fileURLWithPath: resourcesDirectory).appendingPathComponent("VaccinationGeneric.pass")
             } else {
                 return URL(fileURLWithPath: resourcesDirectory).appendingPathComponent("VaccinationPT.pass")

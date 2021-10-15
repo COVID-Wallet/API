@@ -56,20 +56,28 @@ final class WalletPassGeneratorController {
                                       certificateKey: certificateKey,
                                       overrides: overrides)
         
-        try passBuilder.buildUnsignedPass()
-        try passBuilder.signPass()
-        
-        let passURL = try passBuilder.zipPass()
-        
-        req.eventLoop.scheduleTask(in: .seconds(5)) { passBuilder.cleanup() }
-        
-        let response = req.fileio.streamFile(at: passURL.path)
-        
-        response.headers.contentType = .zip
-        response.headers.contentDisposition = HTTPHeaders.ContentDisposition(.attachment,
-                                                                             name: nil,
-                                                                             filename: passBuilder.passData?.filename ?? "Pass.pkpass")
-        
-        return response
+        do {
+            try passBuilder.buildUnsignedPass()
+            try passBuilder.signPass()
+            
+            let passURL = try passBuilder.zipPass()
+            
+            req.eventLoop.scheduleTask(in: .seconds(60)) { passBuilder.cleanup() }
+            
+            let response = req.fileio.streamFile(at: passURL.path)
+            
+            response.headers.contentType = .zip
+            response.headers.contentDisposition = HTTPHeaders.ContentDisposition(.attachment,
+                                                                                 name: nil,
+                                                                                 filename: passBuilder.passData?.filename ?? "Pass.pkpass")
+            
+            return response
+        } catch {
+            //  Cleanup and rethrow!
+            
+            passBuilder.cleanup()
+            
+            throw error
+        }
     }
 }
