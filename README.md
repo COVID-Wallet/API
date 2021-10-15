@@ -10,6 +10,12 @@ Even though it's written in Swift, it was tested and runs fine on at least macOS
 
 Compile using `swift build -c release`. The Swift toolchain must be installed. At least `Swift 5.2` is required.
 
+## Pre-Requisites
+
+This project requires `zip` and `zsh` to be present on your system. 
+
+The dependency on `zsh` was a bad decision and will be eventually dropped.
+
 ## Running
 
 - Move the release build somewhere, along with the `Resources` folder. 

@@ -75,8 +75,6 @@ class PassBuilder {
         }
     }
     
-    
-    
     private func passTemplateURL(pass: COVIDPass) throws -> URL {
         switch pass.data.certificateData {
         case .recovery:
