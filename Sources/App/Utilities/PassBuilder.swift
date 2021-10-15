@@ -75,7 +75,7 @@ class PassBuilder {
     }
     
     private func generatePassTemplateURL() throws -> URL {
-        let language: SupportedLanguage = overrides.language || .portuguese
+        let language = overrides.language ?? .portuguese
         
         switch covidPass.data.certificateData {
         case .recovery:
