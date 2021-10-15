@@ -41,9 +41,11 @@ final class WalletPassGeneratorController {
         let qrCodeData = try getQRCodeData(req)
         
         let dosesOverride = try? req.content.get(String.self, at: "dosesOverride")
+        let languageOverride = try? req.content.get(String.self, at: "languageOverride")
         let shortNameOverride = try? req.content.get(String.self, at: "shortNameOverride")
         
         let overrides = PassBuilder.Overrides(doses: dosesOverride != "" ? dosesOverride : nil,
+                                              language: SupportedLanguage(rawValue: languageOverride) ?? nil,
                                               shortName: shortNameOverride != "" ? shortNameOverride : nil)
         
         let passBuilder = PassBuilder(withPass: try QRCodeParser.parse(qrCodeData),

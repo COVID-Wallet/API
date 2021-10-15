@@ -12,9 +12,10 @@ class PassBuilder {
     struct Overrides {
         
         let doses: String?
+        let language: SupportedLanguage?
         let shortName: String?
         
-        static let none = Overrides(doses: nil, shortName: nil)
+        static let none = Overrides(doses: nil, language: nil, shortName: nil)
     }
     
     struct GeneratedPassData {
@@ -132,6 +133,8 @@ class PassBuilder {
             throw BuilderError.jsonError
         }
         
+        let language = overrides.language ?? .portuguese
+        
         if var generic = passJSON["generic"] as? [String: [[String: Any]]] {
             let shortName = overrides.shortName ?? covidPass.data.name.humanReadable.shortName
             
@@ -151,14 +154,7 @@ class PassBuilder {
                 generic["secondaryFields"]![0]["value"] = covidPass.dateOfVaccinationPassFormat
                 generic["secondaryFields"]![1]["value"] = covidPass.dateOfBirthPassFormat
                 
-                switch covidPass.country {
-                case "PT":
-                    generic["auxiliaryFields"]![0]["value"] = vaccination.vaccineProphylaxis.name(language: .portuguese)
-                    
-                default:
-                    generic["auxiliaryFields"]![0]["value"] = vaccination.vaccineProphylaxis.name(language: .portuguese)
-                }
-                
+                generic["auxiliaryFields"]![0]["value"] = vaccination.vaccineProphylaxis.name(language: language)
                 generic["auxiliaryFields"]![1]["value"] = vaccination.vaccineProduct.name
                 
                 generatedPassData = .init(name: shortName, type: .vaccination)
@@ -181,14 +177,7 @@ class PassBuilder {
                 generic["secondaryFields"]![0]["value"] = covidPass.testSampleCollectionDatePassFormat
                 generic["secondaryFields"]![1]["value"] = covidPass.expiryDatePassFormat
                 
-                switch covidPass.country {
-                case "PT":
-                    generic["auxiliaryFields"]![0]["value"] = test.testType.name(language: .portuguese)
-                    
-                default:
-                    generic["auxiliaryFields"]![0]["value"] = test.testType.name(language: .english)
-                }
-                
+                generic["auxiliaryFields"]![0]["value"] = test.testType.name(language: language)
                 generic["backFields"]![1]["value"] = covidPass.dateOfBirthPassFormat
                 
                 generatedPassData = .init(name: shortName, type: .test)
