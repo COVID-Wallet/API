@@ -21,12 +21,23 @@ enum VaccineProphylaxis {
         }
     }
     
-    var name: String {
+    func name(language: SupportedLanguage) -> String {
         switch self {
         case .antigen:
-            return "Vacina COVID-19 (antigénio)"
+            switch language {
+            case .english:
+                return "COVID-19 Vaccine (antigen)"
+            case .portuguese:
+                return "Vacina COVID-19 (antigénio)"
+            }
+            
         case .mRNA:
-            return "Vacina COVID-19 (mRNA)"
+            switch language {
+            case .english:
+                return "COVID-19 Vaccine (mRNA)"
+            case .portuguese:
+                return "Vacina COVID-19 (mRNA)"
+            }
         }
     }
 }

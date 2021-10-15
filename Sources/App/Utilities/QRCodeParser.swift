@@ -33,7 +33,8 @@ enum QRCodeParser {
             throw ParseError.invalidOuterCBOR
         }
         
-        guard let outerCBOR2 = outerCBOR[2], case let CBOR.byteString(innerCBORByteString) = outerCBOR2 else {
+        guard let outerCBOR2 = outerCBOR[2],
+              case let CBOR.byteString(innerCBORByteString) = outerCBOR2 else {
             throw ParseError.invalidInnerCBOR
         }
         

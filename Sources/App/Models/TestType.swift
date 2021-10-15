@@ -21,14 +21,23 @@ enum TestType {
         }
     }
     
-    var name: String {
-        //  TODO: Check these values.
-        
+    func name(language: SupportedLanguage) -> String {
         switch self {
         case .pcr:
-            return "Teste PCR"
+            switch language {
+            case .english:
+                return "PCR Test"
+            case .portuguese:
+                return "Teste PCR"
+            }
+            
         case .rapid:
-            return "Teste Rápido"
+            switch language {
+            case .english:
+                return "Rapid Test"
+            case .portuguese:
+                return "Teste Rápido"
+            }
         }
     }
 }

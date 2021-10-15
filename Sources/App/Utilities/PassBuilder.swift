@@ -75,24 +75,24 @@ class PassBuilder {
         }
     }
     
-    private func passTemplateURL(pass: COVIDPass) throws -> URL {
-        switch pass.data.certificateData {
+    private func generatePassTemplateURL() throws -> URL {
+        switch covidPass.data.certificateData {
         case .recovery:
-            if pass.country != "PT" || forceGenericTemplate {
+            if covidPass.country != "PT" || forceGenericTemplate {
                 throw BuilderError.notImplemented
             } else {
                 return URL(fileURLWithPath: resourcesDirectory).appendingPathComponent("Recovery.pass")
             }
             
         case .test:
-            if pass.country != "PT" || forceGenericTemplate {
+            if covidPass.country != "PT" || forceGenericTemplate {
                 throw BuilderError.notImplemented
             } else {
                 return URL(fileURLWithPath: resourcesDirectory).appendingPathComponent("Test.pass")
             }
             
         case .vaccination:
-            if pass.country != "PT" || forceGenericTemplate {
+            if covidPass.country != "PT" || forceGenericTemplate {
                 return URL(fileURLWithPath: resourcesDirectory).appendingPathComponent("VaccinationGeneric.pass")
             } else {
                 return URL(fileURLWithPath: resourcesDirectory).appendingPathComponent("VaccinationPT.pass")
@@ -101,7 +101,7 @@ class PassBuilder {
     }
     
     func buildUnsignedPass() throws {
-        let passTemplateURL = try passTemplateURL(pass: covidPass)
+        let passTemplateURL = try generatePassTemplateURL()
         
         passURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
         
@@ -151,7 +151,14 @@ class PassBuilder {
                 generic["secondaryFields"]![0]["value"] = covidPass.dateOfVaccinationPassFormat
                 generic["secondaryFields"]![1]["value"] = covidPass.dateOfBirthPassFormat
                 
-                generic["auxiliaryFields"]![0]["value"] = vaccination.vaccineProphylaxis.name
+                switch covidPass.country {
+                case "PT":
+                    generic["auxiliaryFields"]![0]["value"] = vaccination.vaccineProphylaxis.name(language: .portuguese)
+                    
+                default:
+                    generic["auxiliaryFields"]![0]["value"] = vaccination.vaccineProphylaxis.name(language: .portuguese)
+                }
+                
                 generic["auxiliaryFields"]![1]["value"] = vaccination.vaccineProduct.name
                 
                 generatedPassData = .init(name: shortName, type: .vaccination)
@@ -174,7 +181,13 @@ class PassBuilder {
                 generic["secondaryFields"]![0]["value"] = covidPass.testSampleCollectionDatePassFormat
                 generic["secondaryFields"]![1]["value"] = covidPass.expiryDatePassFormat
                 
-                generic["auxiliaryFields"]![0]["value"] = test.testType.name
+                switch covidPass.country {
+                case "PT":
+                    generic["auxiliaryFields"]![0]["value"] = test.testType.name(language: .portuguese)
+                    
+                default:
+                    generic["auxiliaryFields"]![0]["value"] = test.testType.name(language: .english)
+                }
                 
                 generic["backFields"]![1]["value"] = covidPass.dateOfBirthPassFormat
                 
