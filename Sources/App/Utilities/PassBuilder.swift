@@ -75,23 +75,25 @@ class PassBuilder {
     }
     
     private func generatePassTemplateURL() throws -> URL {
+        let language: SupportedLanguage = overrides.language || .portuguese
+        
         switch covidPass.data.certificateData {
         case .recovery:
-            if covidPass.country != "PT" || overrides.language != .portuguese {
+            if covidPass.country != "PT" || language != .portuguese {
                 throw BuilderError.notImplemented
             } else {
                 return URL(fileURLWithPath: resourcesDirectory).appendingPathComponent("Recovery.pass")
             }
             
         case .test:
-            if covidPass.country != "PT" || overrides.language != .portuguese {
+            if covidPass.country != "PT" || language != .portuguese {
                 throw BuilderError.notImplemented
             } else {
                 return URL(fileURLWithPath: resourcesDirectory).appendingPathComponent("Test.pass")
             }
             
         case .vaccination:
-            if covidPass.country != "PT" || overrides.language != .portuguese {
+            if covidPass.country != "PT" || language != .portuguese {
                 return URL(fileURLWithPath: resourcesDirectory).appendingPathComponent("VaccinationGeneric.pass")
             } else {
                 return URL(fileURLWithPath: resourcesDirectory).appendingPathComponent("VaccinationPT.pass")
