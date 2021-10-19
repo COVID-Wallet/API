@@ -1,0 +1,14 @@
+{
+  "logo@2x.png" : "9fbbc9e4973e069fee2003f73ec8cc6ec56ca181",
+  "logo.png" : "a7f52cb131d29b966bd854a6046b3d9fbf69a3c8",
+  "logo@3x.png" : "fc0f3fb5436ac57fc844bd1214eecf3dbb18b3e1",
+  "en.lproj\/pass.strings" : "8655c7a2884632056a48d5c5fa4da294b5eacca2",
+  "pt.lproj\/pass.strings" : "f353f9a1a1ba6bf895849e70cc3403c7cd44c63d",
+  "thumbnail@3x.png" : "c9a8eafb91537a67730b0c4df4183473c0d25fd0",
+  "icon@2x.png" : "9fbbc9e4973e069fee2003f73ec8cc6ec56ca181",
+  "icon@3x.png" : "fc0f3fb5436ac57fc844bd1214eecf3dbb18b3e1",
+  "pass.json" : "<<pass.json.sha1>>",
+  "icon.png" : "a7f52cb131d29b966bd854a6046b3d9fbf69a3c8",
+  "thumbnail.png" : "a27b2c2db3bead9d66f3c3c8b9c92d72363679e0",
+  "thumbnail@2x.png" : "a8b3cbf41758daba37f976e39408c2c3330acd5f"
+}

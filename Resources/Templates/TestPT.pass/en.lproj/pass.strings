@@ -1,0 +1,13 @@
+/* EN Translations */
+"description" = "EU Digital COVID Certificate";
+"logoText" = "Digital COVID Cert.";
+"name" = "Name";
+"testDate" = "Date of Test";
+"fullName" = "Full Name";
+"birthDate" = "Date of Birth";
+"testType" = "Test Type";
+"testResult" = "Test Result";
+"notDetected" = "Not Detected";
+"memberState" = "Country";
+"identifier" = "Unique Certificate Identifier (UVCI)";
+"expirationDate" = "Expiration Date";

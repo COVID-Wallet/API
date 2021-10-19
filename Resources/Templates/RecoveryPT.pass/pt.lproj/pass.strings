@@ -1,0 +1,11 @@
+/* PT Translations */
+"description" = "Certificado Digital COVID da UE";
+"logoText" = "Certif. Digital COVID";
+"name" = "Nome";
+"firstPositiveTestDate" = "Data 1º Teste Positivo";
+"fullName" = "Nome Completo";
+"birthDate" = "Data de Nascimento";
+"memberState" = "País";
+"identifier" = "Identificador Único do Certificado (UVCI)";
+"validFrom" = "Data de Início";
+"expirationDate" = "Data de Expiração";

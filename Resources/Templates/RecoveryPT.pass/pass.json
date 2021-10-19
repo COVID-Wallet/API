@@ -1,0 +1,77 @@
+{
+    "formatVersion": 1,
+    "passTypeIdentifier": "<<< FILL ME - Use a pass type identifier that works with your pass certificate. >>>",
+    "serialNumber": "<<< FILL ME - Any number will work in this field. >>>",
+    "teamIdentifier": "<<< FILL ME - Use your Apple Developer team ID. >>>",
+    "barcode": {
+        "message": "<<< FILL ME - Use the string acquired from zbarimg. >>>",
+        "format": "PKBarcodeFormatQR",
+        "messageEncoding": "utf8"
+    },
+    "expirationDate": "<<< FILL ME - 1970-01-01T00:00:00-00:00 >>>",
+    "organizationName": "COVID Wallet (https://covidwallet.pt)",
+    "description": "description",
+    "logoText": "logoText",
+    "foregroundColor": "rgb(255, 255, 255)",
+    "backgroundColor": "rgb(0, 169, 123)",
+    "generic": {
+        "headerFields": [
+            {
+                "key": "memberState",
+                "label": "memberState",
+                "value": "<<< FILL ME >>>"
+            }
+        ],
+        "primaryFields": [
+            {
+                "key": "names",
+                "label": "name",
+                "value": "<<< FILL ME >>>"
+            }
+        ],
+        "secondaryFields": [
+            {
+                "key": "data",
+                "dateStyle": "PKDateStyleShort",
+                "timeStyle": "PKDateStyleNone",
+                "label": "firstPositiveTestDate",
+                "value": "<<< FILL ME >>>"
+            },
+            {
+                "key": "expirationDate",
+                "label": "expirationDate",
+                "dateStyle": "PKDateStyleShort",
+                "timeStyle": "PKDateStyleNone",
+                "value": "<<< FILL ME >>>",
+                "textAlignment": "PKTextAlignmentRight"
+            }
+        ],
+        "backFields": [
+            {
+                "key": "fullName",
+                "label": "fullName",
+                "value": "<<< FILL ME >>>"
+            },
+            {
+                "label": "birthDate",
+                "key": "birthDate",
+                "dateStyle": "PKDateStyleShort",
+                "timeStyle": "PKDateStyleNone",
+                "ignoresTimeZone": true,
+                "value": "<<< FILL ME >>>"
+            },
+            {
+                "label": "validFrom",
+                "key": "validFrom",
+                "dateStyle": "PKDateStyleFull",
+                "timeStyle": "PKDateStyleFull",
+                "value": "<<< FILL ME >>>"
+            },
+            {
+                "label": "identifier",
+                "key": "identifier",
+                "value": "<<< FILL ME >>>"
+            }
+        ]
+    }
+}
