@@ -32,7 +32,7 @@
         "secondaryFields": [
             {
                 "key": "data",
-                "dateStyle": "PKDateStyleShort",
+                "dateStyle": "PKDateStyleMedium",
                 "timeStyle": "PKDateStyleNone",
                 "label": "firstPositiveTestDate",
                 "value": "<<< FILL ME >>>"
@@ -40,7 +40,7 @@
             {
                 "key": "expirationDate",
                 "label": "expirationDate",
-                "dateStyle": "PKDateStyleShort",
+                "dateStyle": "PKDateStyleMedium",
                 "timeStyle": "PKDateStyleNone",
                 "value": "<<< FILL ME >>>",
                 "textAlignment": "PKTextAlignmentRight"

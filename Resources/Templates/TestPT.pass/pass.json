@@ -33,14 +33,14 @@
             {
                 "key": "data",
                 "label": "testDate",
-                "dateStyle": "PKDateStyleShort",
+                "dateStyle": "PKDateStyleMedium",
                 "timeStyle": "PKDateStyleNone",
                 "value": "<<< FILL ME >>>"
             },
             {
                 "key": "expirationDate",
                 "label": "expirationDate",
-                "dateStyle": "PKDateStyleShort",
+                "dateStyle": "PKDateStyleMedium",
                 "timeStyle": "PKDateStyleNone",
                 "value": "<<< FILL ME >>>",
                 "textAlignment": "PKTextAlignmentRight"

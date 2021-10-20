@@ -37,7 +37,7 @@
         "secondaryFields": [
             {
                 "key": "data",
-                "dateStyle": "PKDateStyleShort",
+                "dateStyle": "PKDateStyleMedium",
                 "timeStyle": "PKDateStyleNone",
                 "label": "vaccinationDate",
                 "value": "<<< FILL ME >>>"
@@ -45,7 +45,7 @@
             {
                 "key": "birthDate",
                 "label": "birthDate",
-                "dateStyle": "PKDateStyleShort",
+                "dateStyle": "PKDateStyleMedium",
                 "timeStyle": "PKDateStyleNone",
                 "ignoresTimeZone": true,
                 "value": "<<< FILL ME >>>",
