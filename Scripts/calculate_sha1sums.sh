@@ -1,9 +1,9 @@
 #!/bin/sh
 
 echo "➜ Image Resource SHA1Sums:"
-shasum ../Resources/*.pass/*.png
+shasum ../Resources/Templates/*.pass/*.png
 
 echo ""
 echo "➜ Translations SHA1Sums:"
 
-shasum ../Resources/*.pass/*/*
+shasum ../Resources/Templates/*.pass/*/*
