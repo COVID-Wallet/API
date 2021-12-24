@@ -40,6 +40,7 @@ enum Shell {
         task.standardError = pipe
         task.arguments = ["-c", command]
         task.executableURL = URL(fileURLWithPath: shellPath)
+        
         try task.run()
         
         let data = pipe.fileHandleForReading.readDataToEndOfFile()
