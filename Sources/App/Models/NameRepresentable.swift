@@ -14,7 +14,14 @@ protocol NameRepresentable {
 extension NameRepresentable {
     
     var shortName: String {
-        forenames.capitalized
+        guard surnames.count > 0 else {
+            return forenames.capitalized
+        }
+        
+        return [forenames.components(separatedBy: " ").first, surnames.components(separatedBy: " ").last]
+            .compactMap { $0 }
+            .joined(separator: " ")
+            .capitalized
     }
     
     var fullName: String {
