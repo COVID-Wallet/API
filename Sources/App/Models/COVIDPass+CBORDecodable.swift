@@ -17,6 +17,7 @@ enum COVIDPassDecodeError: Error {
     case invalidCountry(country: String)
     case invalidDiseaseAgent(diseaseAgent: String)
     case invalidPassType
+    case invalidTestType
     case invalidVaccine
     case malformedPass
     case notImplemented
@@ -149,11 +150,20 @@ extension COVIDPass.Data.CertificateData {
               let tg = data[.utf8String("tg")], case let CBOR.utf8String(diseaseAgentTargeted) = tg,
               
               let tt = data[.utf8String("tt")], case let CBOR.utf8String(testType) = tt,
-              let ma = data[.utf8String("ma")], case let CBOR.utf8String(testDeviceIdentifier) = ma,
               let sc = data[.utf8String("sc")], case let CBOR.utf8String(testSampleCollectionDate) = sc,
               let tr = data[.utf8String("tr")], case let CBOR.utf8String(testResult) = tr,
               let tc = data[.utf8String("tc")], case let CBOR.utf8String(testingCentreFacility) = tc else {
             throw COVIDPassDecodeError.parseError
+        }
+        
+        let testDevice: String
+        
+        if let ma = data[.utf8String("ma")], case let CBOR.utf8String(testDeviceIdentifier) = ma {
+            testDevice = testDeviceIdentifier
+        } else if let nm = data[.utf8String("nm")], case let CBOR.utf8String(testName) = nm {
+            testDevice = testName
+        } else {
+            throw COVIDPassDecodeError.invalidTestType
         }
         
         guard let diseaseAgentTargeted = DiseaseAgentTargeted(code: diseaseAgentTargeted) else {
@@ -179,7 +189,7 @@ extension COVIDPass.Data.CertificateData {
                             certificateIdentifier: certificateIdentifier,
                             testType: testType,
                             testName: testName,
-                            testDeviceIdentifier: testDeviceIdentifier,
+                            testDeviceIdentifier: testDevice,
                             testSampleCollectionDate: testSampleCollectionDate,
                             testResult: testResult,
                             testingCentreFacility: testingCentreFacility)
